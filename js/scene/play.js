@@ -118,6 +118,12 @@ export default class Play extends Phaser.State {
     this.countdown_in_seconds += 10;
   }
 
+  GameOver() {
+    this.time.events.remove(this.timer);
+    this.time_text.text="Game Over";
+    this.game.state.start('select');
+  }
+
   Tick() {
     this.countdown_in_seconds--;
     var minutes = Math.floor(this.countdown_in_seconds / 60);
@@ -125,8 +131,7 @@ export default class Play extends Phaser.State {
     var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
     this.time_text.text = time_string;
     if (this.countdown_in_seconds == 0) {
-      this.time.events.remove(this.timer);
-      this.time_text.text="Game Over";
+      this.GameOver();
     }
   }
 
@@ -247,7 +252,6 @@ export default class Play extends Phaser.State {
   NextMission() {
     this.game.level++;
     if (this.game.level % 5 == 0) {
-
       this.game.state.start('select');
     } else {
       this.game.state.start('play');
