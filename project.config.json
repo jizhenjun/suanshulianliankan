@@ -1,19 +1,20 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true
 	},
 	"compileType": "game",
-	"libVersion": "game",
-	"appid": "wx6ac3f5090a6b99c5",
-	"projectname": "ssllk",
+	"libVersion": "2.2.5",
+	"appid": "wx6821029b02ce9c86",
+	"projectname": "suanshulianliankan",
+	"miniprogramRoot": "miniprogram/",
+	"cloudfunctionRoot": "cloudfunction/",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"isGameTourist": true,
 	"condition": {
 		"search": {
 			"current": -1,
