@@ -57,13 +57,23 @@ export default class Select extends Phaser.State {
       }
       
       for (var j = 0; j < this.mission_in_chapter; j++) {
-        let star = this.add.sprite(
-          (j + 2) * this.mission_square_size,
-          (i - 1) * this.mission_square_size + 100,
-          'colorlessStar'
-        );
-        star.width = this.mission_interval_size; 
-        star.height = this.mission_interval_size;
+        if (j >= this.completed_mission[i]) {
+          var color_less_star = this.add.sprite(
+            (j + 2) * this.mission_square_size,
+            (i - 1) * this.mission_square_size + 100,
+            'colorlessStar'
+          );
+          color_less_star.width = this.mission_interval_size; 
+          color_less_star.height = this.mission_interval_size;
+        } else {
+          var star = this.add.sprite(
+            (j + 2) * this.mission_square_size,
+            (i - 1) * this.mission_square_size + 100,
+            'star'
+          );
+          star.width = this.mission_interval_size; 
+          star.height = this.mission_interval_size;
+        }
       }
     }
   }

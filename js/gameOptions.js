@@ -18,7 +18,7 @@ const gameOptions = {
   mission_square_size: 50,
   mission_interval_size: 40,
 
-  completed_mission: [0, 0, 0, 0, 0,
+  completed_mission: [3, 0, 0, 0, 0,
                       0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0,
                       0, 0, 0, 0, 0],
