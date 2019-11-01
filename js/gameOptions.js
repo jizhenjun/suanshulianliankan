@@ -11,7 +11,7 @@ const gameOptions = {
                          2, 2, 2, 2, 2],
   map_max_number:       [5, 5, 5, 5, 5,
                          5, 5, 5, 5, 5],
-  countdown_in_seconds: [30, 30, 30, 30, 30, 
+  countdown_in_seconds: [10, 30, 30, 30, 30, 
                          30, 30, 30, 30, 30],
   mission_count: 20,
   mission_in_chapter: 5,

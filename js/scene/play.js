@@ -96,21 +96,40 @@ export default class Play extends Phaser.State {
     add_time_button.inputEnabled = true;
     add_time_button.events.onInputDown.add(this.AddTime, this);
 
-    var return_menu_button = this.add.sprite(0, 100, 'exit');
+    var return_menu_button = this.add.sprite(0, 150, 'exit');
     return_menu_button.width = 50;
     return_menu_button.height = 50;
     return_menu_button.inputEnabled = true;
     return_menu_button.events.onInputDown.add(this.ReturnMenu, this);
 
+    this.continue_button = this.add.sprite(0, 200, 'continue');
+    this.continue_button.width = 50;
+    this.continue_button.height = 50;
+    this.continue_button.alpha = 0;
+    this.continue_button.inputEnabled = false;
+    this.continue_button.events.onInputDown.add(this.Continue, this);
+
     // todo:
-    // var pause_button = this.add.sprite(0, 150, 'pause');
-    // pause_button.width = 50;
-    // pause_button.height = 50;
-    // pause_button.inputEnabled = true;
-    // pause_button.events.onInputDown.add(this.Pause, this);
+    var pause_button = this.add.sprite(50, 50, 'pause');
+    pause_button.width = 50;
+    pause_button.height = 50;
+    pause_button.inputEnabled = true;
+    pause_button.events.onInputDown.add(this.Pause, this);
   }
 
-  ReturnMenu() {
+  Continue() {
+    this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.Tick, this);
+    this.continue_button.alpha = 0;
+    this.continue_button.inputEnabled = false;
+  }
+
+  Pause() {
+    this.time.events.remove(this.timer);
+    this.continue_button.alpha = 1;
+    this.continue_button.inputEnabled = true;
+  }
+
+  ReturnMenu(sprite, pointer) {
     this.game.state.start('select');
   }
 
