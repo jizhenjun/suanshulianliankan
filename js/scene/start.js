@@ -21,6 +21,8 @@ export default class Start extends Phaser.State {
       'star': 'assets/star.gif',
       'lock': 'assets/lock.gif',
       'exit': 'assets/exit.gif',
+      'pause': 'assets/music.gif',
+      'continue': 'assets/continue.gif',
 
       'earth': 'images/earth.png',
 			'rocket': 'images/rocket.png',
