@@ -95,6 +95,23 @@ export default class Play extends Phaser.State {
     add_time_button.height = 50;
     add_time_button.inputEnabled = true;
     add_time_button.events.onInputDown.add(this.AddTime, this);
+
+    var return_menu_button = this.add.sprite(0, 100, 'exit');
+    return_menu_button.width = 50;
+    return_menu_button.height = 50;
+    return_menu_button.inputEnabled = true;
+    return_menu_button.events.onInputDown.add(this.ReturnMenu, this);
+
+    // todo:
+    // var pause_button = this.add.sprite(0, 150, 'pause');
+    // pause_button.width = 50;
+    // pause_button.height = 50;
+    // pause_button.inputEnabled = true;
+    // pause_button.events.onInputDown.add(this.Pause, this);
+  }
+
+  ReturnMenu() {
+    this.game.state.start('select');
   }
 
   AddTime() {
@@ -107,7 +124,7 @@ export default class Play extends Phaser.State {
     var seconds = this.countdown_in_seconds - (minutes * 60);
     var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
     this.time_text.text = time_string;
-    if (this.timeInSeconds == 0) {
+    if (this.countdown_in_seconds == 0) {
       this.time.events.remove(this.timer);
       this.time_text.text="Game Over";
     }
