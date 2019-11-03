@@ -9,26 +9,27 @@ export default class Start extends Phaser.State {
   }
 
   preload() {
+    // this.load.setBaseURL("https://suanshulianlian.oss-cn-beijing.aliyuncs.com");
     const images = {
-      'background': 'assets/background.png',
-      'title': 'assets/title.png',
-      'menu': 'assets/menu.gif', 
-      'waterGrass': 'assets/waterGrass.gif',
-      'prompt': 'assets/prompt.gif',
-      'overtime': 'assets/Overtime.gif',
-      'colorlessStar': 'assets/colorlessStar.gif',
-      'circle': 'assets/circle.gif',
-      'star': 'assets/star.gif',
-      'lock': 'assets/lock.gif',
-      'exit': 'assets/exit.gif',
-      'pause': 'assets/music.gif',
-      'continue': 'assets/continue.gif',
+      'background': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/background.png',
+      'title': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/title.png',
+      'menu': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/menu.gif', 
+      'waterGrass': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/waterGrass.gif',
+      'prompt': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/prompt.gif',
+      'overtime': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/Overtime.gif',
+      'colorlessStar': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/colorlessStar.gif',
+      'circle': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/circle.gif',
+      'star': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/star.gif',
+      'lock': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/lock.gif',
+      'exit': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/exit.gif',
+      'pause': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/music.gif',
+      'continue': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/continue.gif',
 
-      'earth': 'images/earth.png',
-			'rocket': 'images/rocket.png',
-			'play': 'images/play.png',
-			'particle1': 'images/particulelune1.png',
-			'particle2': 'images/particulelune2.png',
+      'earth': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/earth.png',
+      'rocket': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/rocket.png',
+      'play': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/play.png',
+      'particle1': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/particulelune1.png',
+      'particle2': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/particulelune2.png',
     };
 		for (let name in images) {
 			this.load.image(name, images[name]);
