@@ -9,27 +9,27 @@ export default class Start extends Phaser.State {
   }
 
   preload() {
-    // this.load.setBaseURL("https://suanshulianlian.oss-cn-beijing.aliyuncs.com");
+    this.base_url = 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/'
     const images = {
-      'background': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/background.png',
-      'title': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/title.png',
-      'menu': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/menu.gif', 
-      'waterGrass': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/waterGrass.gif',
-      'prompt': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/prompt.gif',
-      'overtime': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/Overtime.gif',
-      'colorlessStar': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/colorlessStar.gif',
-      'circle': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/circle.gif',
-      'star': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/star.gif',
-      'lock': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/lock.gif',
-      'exit': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/exit.gif',
-      'pause': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/music.gif',
-      'continue': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/assets/continue.gif',
+      'background': this.base_url + 'assets/background.png',
+      'title': this.base_url + 'assets/title.png',
+      'menu': this.base_url + 'assets/menu.gif', 
+      'waterGrass': this.base_url + 'assets/waterGrass.gif',
+      'prompt': this.base_url + 'assets/prompt.gif',
+      'overtime': this.base_url + 'assets/Overtime.gif',
+      'colorlessStar': this.base_url + 'assets/colorlessStar.gif',
+      'circle': this.base_url + 'assets/circle.gif',
+      'star': this.base_url + 'assets/star.gif',
+      'lock': this.base_url + 'assets/lock.gif',
+      'exit': this.base_url + 'assets/exit.gif',
+      'pause': this.base_url + 'assets/music.gif',
+      'continue': this.base_url + 'assets/continue.gif',
 
-      'earth': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/earth.png',
-      'rocket': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/rocket.png',
-      'play': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/play.png',
-      'particle1': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/particulelune1.png',
-      'particle2': 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/images/particulelune2.png',
+      'earth': this.base_url + 'images/earth.png',
+      'rocket': this.base_url + 'images/rocket.png',
+      'play': this.base_url + 'images/play.png',
+      'particle1': this.base_url + 'images/particulelune1.png',
+      'particle2': this.base_url + 'images/particulelune2.png',
     };
 		for (let name in images) {
 			this.load.image(name, images[name]);
