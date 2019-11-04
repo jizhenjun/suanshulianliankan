@@ -76,6 +76,16 @@ export default class Select extends Phaser.State {
         }
       }
     }
+
+    var return_menu_button = this.add.sprite(0, 50, 'exit');
+    return_menu_button.width = 50;
+    return_menu_button.height = 50;
+    return_menu_button.inputEnabled = true;
+    return_menu_button.events.onInputDown.add(this.ReturnMenu, this);
+  }
+
+  ReturnMenu() {
+    this.game.state.start('start');
   }
 
   start_mission(sprite, pointer) {

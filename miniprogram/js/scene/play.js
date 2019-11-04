@@ -21,7 +21,11 @@ export default class Play extends Phaser.State {
     //关卡地图数值
     this.map_size = gameOptions.map_size[this.game.level];
     this.map_max_number = gameOptions.map_max_number[this.game.level];
-    this.countdown_in_seconds = gameOptions.countdown_in_seconds[this.game.level];
+    this.rule = gameOptions.rule[this.game.level];
+    this.target_number = gameOptions.target_number[this.game.level];
+    if (this.game.level % 5 == 0) {
+      this.countdown_in_seconds = gameOptions.countdown_in_seconds[this.game.level / 5];
+    }
 
     this.level_text = this.add.text(0, 100, 'level:' + this.game.level);
 
@@ -109,8 +113,7 @@ export default class Play extends Phaser.State {
     this.continue_button.inputEnabled = false;
     this.continue_button.events.onInputDown.add(this.Continue, this);
 
-    // todo:
-    var pause_button = this.add.sprite(50, 50, 'pause');
+    var pause_button = this.add.sprite(0, 250, 'pause');
     pause_button.width = 50;
     pause_button.height = 50;
     pause_button.inputEnabled = true;
@@ -140,7 +143,7 @@ export default class Play extends Phaser.State {
   GameOver() {
     this.time.events.remove(this.timer);
     this.time_text.text="Game Over";
-    this.game.state.start('select');
+    // this.game.state.start('select');
   }
 
   Tick() {
@@ -175,7 +178,6 @@ export default class Play extends Phaser.State {
 
   RegenerateMap() {
     var count = 0;
-    var value = [];
     var position = [];
     var total = this.map_size * this.map_size;
     for (var i = 0; i < total; i++) {
@@ -184,9 +186,17 @@ export default class Play extends Phaser.State {
       if (!this.map[x][y]) {
         continue;
       }
-      value.push(this.tArray[x][y].value);
       position.push(i);
       count++;
+    }
+    var value = new Array();
+    for (var i = 0; i < count / 2; i++) {
+      value[i * 2] = this.GenerateFirst();
+      value[i * 2 + 1] = this.GeneratePair(value[i * 2]);
+      while(!this.GameRule(value[i * 2], value[i * 2 + 1])) {
+        value[i * 2] = this.GenerateFirst();
+        value[i * 2 + 1] = this.GeneratePair(value[i * 2]);
+      }
     }
     var sort_array = this.GenerateOrder(count);
     for (var i = 0; i < count; i++) {
@@ -198,29 +208,16 @@ export default class Play extends Phaser.State {
   }
 
   GameRule(a, b) {
-    switch (this.game.level) {
-      case 0:
-          return a + b == this.map_max_number;
+    switch (this.rule) {
       case 1:
-          return a + b == this.map_max_number;
+          return a + b == this.target_number;
       case 2:
-          return a + b == this.map_max_number;
+          return (a - b == this.target_number || b - a == this.target_number);
       case 3:
-          return a + b == this.map_max_number;
+          return a * b == this.target_number;
       case 4:
-          return a + b == this.map_max_number;
-      case 5:
-          return a + b == this.map_max_number;
-      case 6:
-          return a + b == this.map_max_number;
-      case 7:
-          return a + b == this.map_max_number;
-      case 8:
-          return a + b == this.map_max_number;
-      case 9:
-          return a + b == this.map_max_number;
+          return (parseInt(a / b) == this.target_number || parseInt(b / a) == this.target_number);
     }
-    
   }
 
   getRandom(min, max) {
@@ -251,12 +248,43 @@ export default class Play extends Phaser.State {
     return this.shuffle(sort_array);
   }
 
+  GeneratePair(a) {
+    switch (this.rule) {
+      case 1:
+          return this.target_number - a;
+      case 2:
+          return this.target_number + a;
+      case 3:
+          return parseInt(this.target_number / a);
+      case 4:
+          return this.target_number * a;
+    }
+  }
+
+  GenerateFirst() {
+    switch (this.rule) {
+      case 1:
+          return this.getRandom(0, this.map_max_number);
+      case 2:
+          return this.getRandom(0, this.map_max_number - this.target_number);
+      case 3:
+          return this.getRandom(1, this.map_max_number);
+      case 4:
+          return this.getRandom(1, parseInt(this.map_max_number / this.target_number));
+    }
+  }
+
   GenerateMap() {
     var total = this.map_size * this.map_size;
     var unordered_square = new Array(total);
     for (var i = 0; i < total / 2; i++) {
-      unordered_square[i * 2] = this.getRandom(0, this.map_max_number);
-      unordered_square[i * 2 + 1] = this.map_max_number - unordered_square[i * 2];
+      unordered_square[i * 2] = this.GenerateFirst();
+      unordered_square[i * 2 + 1] = this.GeneratePair(unordered_square[i * 2]);
+      while(!this.GameRule(unordered_square[i * 2], unordered_square[i * 2 + 1])) {
+        console.log(unordered_square[i * 2], unordered_square[i * 2 + 1])
+        unordered_square[i * 2] = this.GenerateFirst();
+        unordered_square[i * 2 + 1] = this.GeneratePair(unordered_square[i * 2]);
+      }
     }
     var sort_array = this.GenerateOrder(total);
     for (var i = 0; i < this.map_size; i++) {
@@ -271,6 +299,7 @@ export default class Play extends Phaser.State {
   NextMission() {
     this.game.level++;
     if (this.game.level % 5 == 0) {
+      console.log('mission complete')
       this.game.state.start('select');
     } else {
       this.game.state.start('play');
