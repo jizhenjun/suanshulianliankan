@@ -25,6 +25,7 @@ export default class Play extends Phaser.State {
     this.target_number = gameOptions.target_number[this.game.level];
     if (this.game.level % 5 == 0) {
       this.countdown_in_seconds = gameOptions.countdown_in_seconds[this.game.level / 5];
+      this.stars_in_seconds = gameOptions.stars_in_seconds[parseInt(this.game.level / 5)];
     }
 
     this.level_text = this.add.text(0, 100, 'level:' + this.game.level);
@@ -33,7 +34,7 @@ export default class Play extends Phaser.State {
     this.square_size = gameOptions.square_size;
     this.square_interval = gameOptions.square_interval;
 
-    var minutes = Math.floor(this.countdown_in_seconds / 60);
+    var minutes = parseInt(this.countdown_in_seconds / 60);
     var seconds = this.countdown_in_seconds - (minutes * 60);
     var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
     this.time_text = this.add.text(50, 50, time_string);
@@ -148,7 +149,7 @@ export default class Play extends Phaser.State {
 
   Tick() {
     this.countdown_in_seconds--;
-    var minutes = Math.floor(this.countdown_in_seconds / 60);
+    var minutes = parseInt(this.countdown_in_seconds / 60);
     var seconds = this.countdown_in_seconds - (minutes * 60);
     var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
     this.time_text.text = time_string;
@@ -299,7 +300,13 @@ export default class Play extends Phaser.State {
   NextMission() {
     this.game.level++;
     if (this.game.level % 5 == 0) {
-      console.log('mission complete')
+      for (var i = 4; i >= 0; i--) {
+        if (this.countdown_in_seconds >= this.stars_in_seconds[i]) {
+          console.log('You earned ' + (i + 1) + ' stars!');
+          break;
+        }
+      }
+      console.log('mission complete');
       this.game.state.start('select');
     } else {
       this.game.state.start('play');
