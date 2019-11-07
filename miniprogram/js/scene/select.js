@@ -28,7 +28,7 @@ export default class Select extends Phaser.State {
     var start_mission_flag = true;
     for (var i = 0; i < this.mission_count; i++) {
       this.missions[i] = new Array();
-      let circle = this.add.sprite(
+      var circle = this.add.sprite(
         this.mission_square_size,
         (i + 1) * this.mission_square_size,
         'circle'
@@ -39,7 +39,7 @@ export default class Select extends Phaser.State {
       
       if (this.completed_mission[i] == 0) {
         if (!start_mission_flag) {
-          let lock = this.add.sprite(
+          var lock = this.add.sprite(
             this.mission_square_size,
             (i + 1) * this.mission_square_size,
             'lock'

@@ -88,7 +88,6 @@ export default class Play extends Phaser.State {
     while (this.EliminationExist().a == -1 && this.EliminationExist().b == -1) {
       this.RegenerateMap();
     }
-
     var prompt_button = this.add.sprite(0, 0, 'prompt');
     prompt_button.width = 50;
     prompt_button.height = 50;
@@ -134,6 +133,7 @@ export default class Play extends Phaser.State {
   }
 
   ReturnMenu(sprite, pointer) {
+    this.time.events.remove(this.timer);
     this.game.state.start('select');
   }
 
@@ -179,7 +179,6 @@ export default class Play extends Phaser.State {
 
   RegenerateMap() {
     var count = 0;
-    var position = [];
     var total = this.map_size * this.map_size;
     for (var i = 0; i < total; i++) {
       var x = parseInt(i / this.map_size) + this.delta;
@@ -187,7 +186,6 @@ export default class Play extends Phaser.State {
       if (!this.map[x][y]) {
         continue;
       }
-      position.push(i);
       count++;
     }
     var value = new Array();
@@ -200,11 +198,15 @@ export default class Play extends Phaser.State {
       }
     }
     var sort_array = this.GenerateOrder(count);
+    var tmpx = [];
+    var tmpy = [];
     for (var i = 0; i < count; i++) {
-      var x = parseInt(position[i] / this.max_size);
-      var y = position[i] % this.max_size;
+      var x = parseInt(i / this.map_size) + this.delta;
+      var y = i % this.map_size + this.delta;
       this.tArray[x][y].value = value[sort_array[i]];
       this.tArray[x][y].number_text.setText(sort_array[i]);
+      tmpx.push(x);
+      tmpy.push(y);
     }
   }
 
@@ -282,7 +284,6 @@ export default class Play extends Phaser.State {
       unordered_square[i * 2] = this.GenerateFirst();
       unordered_square[i * 2 + 1] = this.GeneratePair(unordered_square[i * 2]);
       while(!this.GameRule(unordered_square[i * 2], unordered_square[i * 2 + 1])) {
-        console.log(unordered_square[i * 2], unordered_square[i * 2 + 1])
         unordered_square[i * 2] = this.GenerateFirst();
         unordered_square[i * 2 + 1] = this.GeneratePair(unordered_square[i * 2]);
       }
@@ -307,8 +308,10 @@ export default class Play extends Phaser.State {
         }
       }
       console.log('mission complete');
+      this.time.events.remove(this.timer);
       this.game.state.start('select');
     } else {
+      this.time.events.remove(this.timer);
       this.game.state.start('play');
     }
   }
@@ -418,13 +421,13 @@ export default class Play extends Phaser.State {
     }
     var total = this.map_size * this.map_size;
     for (var i = 0; i < total; i++) {
-      var x1 = parseInt(i / this.map_size + this.delta);
+      var x1 = parseInt(i / this.map_size) + this.delta;
       var y1 = i % this.map_size + this.delta;
       if (!this.map[x1][y1]) {
         continue;
       }
       for (var j = i + 1; j < total; j++) {
-        var x2 = parseInt(j / this.map_size + this.delta);
+        var x2 = parseInt(j / this.map_size) + this.delta;
         var y2 = j % this.map_size + this.delta;
         if (!this.map[x2][y2]) {
           continue;
