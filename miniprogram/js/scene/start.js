@@ -11,7 +11,8 @@ export default class Start extends Phaser.State {
   preload() {
     this.base_url = 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/'
     const images = {
-      'background': this.base_url + 'assets/background.png',
+      // 'background': this.base_url + 'assets/background.png',
+      'background': 'background.png',
       'title': this.base_url + 'assets/title.png',
       'menu': this.base_url + 'assets/menu.gif', 
       'waterGrass': this.base_url + 'assets/waterGrass.gif',
@@ -51,10 +52,10 @@ export default class Start extends Phaser.State {
     waterGrass.width = gameOptions.width;
     waterGrass.height = 200;
 
-    const title = this.add.sprite(gameOptions.width / 2, gameOptions.height / 4, 'title');
-    title.width *= 0.5 * screenWidthRatio;
-    title.height *= 0.5 * screenHeightRatio;
-    title.anchor.set(0.5);
+    // const title = this.add.sprite(gameOptions.width / 2, gameOptions.height / 4, 'title');
+    // title.width *= 0.5 * screenWidthRatio;
+    // title.height *= 0.5 * screenHeightRatio;
+    // title.anchor.set(0.5);
 
     const startButton = this.add.group();
     startButton.x = this.world.width / 2;
