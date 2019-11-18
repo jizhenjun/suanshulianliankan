@@ -12,9 +12,41 @@ export default class Select extends Phaser.State {
     this.music = new Music();
     this.music.playBgm();
 
-    const skybox = this.add.sprite(0, 0, 'background');
-    skybox.width = gameOptions.width;
-    skybox.height = gameOptions.height;
+    const background = this.add.sprite(0, 0, 'background');
+    background.width = this.world.width;
+    background.height = this.world.height;
+
+    var menu = this.add.group();
+    menu.scale.set(this.game.screen_ratio);
+    menu.x = this.world.width * 0.5;
+    menu.y = this.world.height * 0.5;
+
+    const board = this.add.sprite(0, 0, 'menu_board');
+    board.scale.set(0.5);
+    board.anchor.set(0.5);
+    menu.add(board);
+
+    var return_button = this.add.button(0, 0, 'return', this.ReturnMenu);
+    return_button.scale.set(0.5);
+    return_button.anchor.set(0.5);
+    return_button.y = board.height * 0.36;
+    menu.add(return_button);
+
+    var prev_page_button = this.add.sprite(0, 0, 'prev_page', this.PrevPage);
+    prev_page_button.scale.set(0.5);
+    prev_page_button.anchor.set(0.5);
+    prev_page_button.x -= board.width * 0.22;
+    prev_page_button.y = board.height * 0.25;
+    menu.add(prev_page_button);
+
+    var next_page_button = this.add.sprite(0, 0, 'next_page', this.NextPage);
+    next_page_button.scale.set(0.5);
+    next_page_button.anchor.set(0.5);
+    next_page_button.x += board.width * 0.22;
+    next_page_button.y = board.height * 0.25;
+    menu.add(next_page_button);
+
+    this.page_number = 0;
 
     this.mission_count = gameOptions.mission_count;
     this.mission_in_chapter = gameOptions.mission_in_chapter;
@@ -27,61 +59,65 @@ export default class Select extends Phaser.State {
     this.missions = new Array();
     var start_mission_flag = true;
     for (var i = 0; i < this.mission_count; i++) {
-      this.missions[i] = new Array();
-      var circle = this.add.sprite(
-        this.mission_square_size,
-        (i + 1) * this.mission_square_size,
-        'circle'
-      );
-      circle.width = this.mission_interval_size; 
-      circle.height = this.mission_interval_size;
-      circle.index = i * 5;
-      
+      this.missions[i] = this.add.group();
+      this.missions[i].scale.set(this.game.screen_ratio);
+      // this.missions[i].x = ;
+      // this.missions[i].y = ;
+
+      var lock_flag = false;
       if (this.completed_mission[i] == 0) {
         if (!start_mission_flag) {
-          var lock = this.add.sprite(
-            this.mission_square_size,
-            (i + 1) * this.mission_square_size,
-            'lock'
-          );
-          lock.width = this.mission_interval_size; 
-          lock.height = this.mission_interval_size;
-        } else {
-          circle.inputEnabled = true;
-          circle.events.onInputDown.add(this.start_mission, this);
+          lock_flag = true;
         }
         start_mission_flag = false;
-      } else {
-        circle.inputEnabled = true;
-        circle.events.onInputDown.add(this.start_mission, this);
       }
+
+      if (lock_flag == true) {
+        var lock_mission = this.add.sprite(0, 0, 'lock_mission');
+        lock_mission.scale.set(0.5);
+        lock_mission.anchor.set(0.5);
+        // lock_mission.x -= board.width * 0.22;
+        // lock_mission.y = board.height * 0.25;
+        this.missions[i].add(lock_mission);
+      } else {
+        var mission_button = this.add.sprite(0, 0, 'mission_choose');
+        mission_button.scale.set(0.5);
+        mission_button.anchor.set(0.5);
+        // mission_button.x -= board.width * 0.22;
+        // mission_button.y = board.height * 0.25;
+        this.missions[i].add(mission_button);
+        mission_button.inputEnabled = true;
+        mission_button.events.onInputDown.add(this.start_mission, this);
+      }
+
+      const mission_text = this.add.sprite(0, 0, 'chapter_2');
+      mission_text.scale.set(0.5);
+      mission_text.anchor.set(0.5);
+      // mission_text.x -= board.width * 0.22;
+      // mission_text.y = board.height * 0.25;
+      this.missions[i].add(mission_text);
       
       for (var j = 0; j < this.mission_in_chapter; j++) {
+        if (lock_flag == true) {
+          continue;
+        }
         if (j >= this.completed_mission[i]) {
-          var color_less_star = this.add.sprite(
-            (j + 2) * this.mission_square_size,
-            (i - 1) * this.mission_square_size + 100,
-            'colorlessStar'
-          );
-          color_less_star.width = this.mission_interval_size; 
-          color_less_star.height = this.mission_interval_size;
+          const colorless_star = this.add.sprite(0, 0, 'colorless_star');
+          colorless_star.scale.set(0.5);
+          colorless_star.anchor.set(0.5);
+          // colorless_star.x -= board.width * 0.22;
+          // colorless_star.y = board.height * 0.25;
+          this.missions[i].add(colorless_star);
         } else {
-          var star = this.add.sprite(
-            (j + 2) * this.mission_square_size,
-            (i - 1) * this.mission_square_size + 100,
-            'star'
-          );
-          star.width = this.mission_interval_size; 
-          star.height = this.mission_interval_size;
+          const star = this.add.sprite(0, 0, 'star');
+          star.scale.set(0.5);
+          star.anchor.set(0.5);
+          // star.x -= board.width * 0.22;
+          // star.y = board.height * 0.25;
+          this.missions[i].add(star);
         }
       }
     }
-
-    var return_menu_button = this.add.sprite(0, 50, 'exit');
-    return_menu_button.width = 50;
-    return_menu_button.height = 50;
-    return_menu_button.inputEnabled = true;
-    return_menu_button.events.onInputDown.add(this.ReturnMenu, this);
   }
 
   ReturnMenu() {
@@ -91,5 +127,13 @@ export default class Select extends Phaser.State {
   start_mission(sprite, pointer) {
     this.game.level = sprite.index;
     this.game.state.start('play');
+  }
+
+  NextPage() {
+    console.log();
+  }
+
+  PrevPage() {
+    console.log();
   }
 }

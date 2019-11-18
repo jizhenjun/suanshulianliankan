@@ -11,26 +11,24 @@ export default class Start extends Phaser.State {
   preload() {
     this.base_url = 'https://suanshulianlian.oss-cn-beijing.aliyuncs.com/'
     const images = {
-      // 'background': this.base_url + 'assets/background.png',
-      'background': 'background.png',
-      'title': this.base_url + 'assets/title.png',
-      'menu': this.base_url + 'assets/menu.gif', 
-      'waterGrass': this.base_url + 'assets/waterGrass.gif',
-      'prompt': this.base_url + 'assets/prompt.gif',
-      'overtime': this.base_url + 'assets/Overtime.gif',
-      'colorlessStar': this.base_url + 'assets/colorlessStar.gif',
-      'circle': this.base_url + 'assets/circle.gif',
-      'star': this.base_url + 'assets/star.gif',
-      'lock': this.base_url + 'assets/lock.gif',
-      'exit': this.base_url + 'assets/exit.gif',
-      'pause': this.base_url + 'assets/music.gif',
-      'continue': this.base_url + 'assets/continue.gif',
+      'background': 'assets/background.png',
+      'title': 'assets/title.png',
+      'help': 'assets/help.png',
+      'single_mode': 'assets/single_mode.png',
+      'others_mode': 'assets/others_mode.png',
+      'menu_board': 'assets/menu_board.png',
+      'mission_choose': 'assets/mission_choose.png',
+      'return': 'assets/return.png',
+      'prev_page': 'assets/prev_page.png',
+      'next_page': 'assets/next_page.png',
+      'lock_mission': 'assets/lock_mission.png',
+      'lock': 'assets/lock.png',
+      'star': 'assets/star.png',
+      'colorless_star': 'assets/colorless_star.png',
 
-      'earth': this.base_url + 'images/earth.png',
-      'rocket': this.base_url + 'images/rocket.png',
-      'play': this.base_url + 'images/play.png',
-      'particle1': this.base_url + 'images/particulelune1.png',
-      'particle2': this.base_url + 'images/particulelune2.png',
+      'chapter_2': 'assets/chapter/choose_2.png',
+
+      'number_0': 'assets/numbers/0.png',
     };
 		for (let name in images) {
 			this.load.image(name, images[name]);
@@ -41,34 +39,46 @@ export default class Start extends Phaser.State {
     this.music = new Music();
     this.music.playBgm();
 
-    const screenWidthRatio = gameOptions.width / 375;
-    const screenHeightRatio = gameOptions.height / 812;
+    this.screen_height = gameOptions.screen_height;
+    this.screen_width = gameOptions.screen_width;
 
-    const skybox = this.add.sprite(0, 0, 'background');
-    skybox.width = gameOptions.width;
-    skybox.height = gameOptions.height;
+    this.game.screen_ratio = Math.min(this.world.height / this.screen_height,
+                                      this.world.width / this.screen_width);
+    
+    const background = this.add.sprite(0, 0, 'background');
+    background.width = this.world.width;
+    background.height = this.world.height;
 
-    const waterGrass = this.add.sprite(0, gameOptions.height - 200, 'waterGrass');
-    waterGrass.width = gameOptions.width;
-    waterGrass.height = 200;
+    const title = this.add.sprite(this.world.width / 2, this.world.height / 4, 'title');
+    title.anchor.set(0.5);
+    title.scale.set(0.5 * this.game.screen_ratio);
 
-    // const title = this.add.sprite(gameOptions.width / 2, gameOptions.height / 4, 'title');
-    // title.width *= 0.5 * screenWidthRatio;
-    // title.height *= 0.5 * screenHeightRatio;
-    // title.anchor.set(0.5);
+    var start_button = this.add.group();
+    start_button.scale.set(this.game.screen_ratio);
+    start_button.x = this.world.width * 0.5;
+    start_button.y = this.world.height * 0.5;
+    
+    var single_mode_button = this.add.button(0, 0, 'single_mode', this.play);
+    single_mode_button.scale.set(0.5);
+    single_mode_button.anchor.set(0.5);
+    start_button.add(single_mode_button);
 
-    const startButton = this.add.group();
-    startButton.x = this.world.width / 2;
-    startButton.y = gameOptions.height * 0.7;
-    startButton.scale.set(0.78);
+    var others_mode_button = this.add.button(0, 0, 'others_mode');
+    others_mode_button.y += others_mode_button.height;
+    others_mode_button.scale.set(0.5);
+    others_mode_button.anchor.set(0.5);
+    start_button.add(others_mode_button);
 
-    const playButton = this.add.button(10, 0, 'play', this.play);
-    playButton.scale.set(screenHeightRatio * 0.6);
-    playButton.anchor.set(0.5);
-    startButton.add(playButton);
+    var help_button = this.add.button(0, 0, 'help', this.help);
+    help_button.scale.set(0.5 * this.game.screen_ratio);
+    help_button.x = this.world.width - help_button.width;
   }
 
   play() {
     this.game.state.start('select');
+  }
+
+  help() {
+    console.log('help');
   }
 }
