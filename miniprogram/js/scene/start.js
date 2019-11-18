@@ -26,7 +26,14 @@ export default class Start extends Phaser.State {
       'star': 'assets/star.png',
       'colorless_star': 'assets/colorless_star.png',
 
-      'chapter_2': 'assets/chapter/choose_2.png',
+      'chapter_1': 'assets/chapter/choose/1.png',
+      'chapter_2': 'assets/chapter/choose/2.png',
+      'chapter_3': 'assets/chapter/choose/3.png',
+      'chapter_4': 'assets/chapter/choose/4.png',
+      'chapter_5': 'assets/chapter/choose/5.png',
+      'chapter_6': 'assets/chapter/choose/6.png',
+      'chapter_7': 'assets/chapter/choose/7.png',
+      'chapter_8': 'assets/chapter/choose/8.png',
 
       'number_0': 'assets/numbers/0.png',
     };

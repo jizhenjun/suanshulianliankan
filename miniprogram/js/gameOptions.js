@@ -7,6 +7,8 @@ const gameOptions = {
   screen_height: 736,
   screen_width: 414,
 
+  mission_in_one_page: 3,
+
   /* 1:a+b=x, 2:|a-b|=x, 3:a*b=x, 4:a/b=x or b/a=x */
   rule:                 [1, 2, 3, 4, 1,
                          1, 2, 3, 4, 1,
@@ -55,8 +57,8 @@ const gameOptions = {
   mission_square_size: 50,
   mission_interval_size: 40,
 
-  completed_mission: [1, 1, 1, 1, 1,
-                      1, 1, 1],
+  completed_mission: [1, 0, 0, 1, 1,
+                      1, 0, 0],
 }
 
 export default gameOptions;
