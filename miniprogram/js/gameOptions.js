@@ -1,7 +1,7 @@
 const gameOptions = {
   max_size: 10,
 
-  square_size: 50,
+  square_size: 40,
   square_interval: 40,
 
   screen_height: 736,
@@ -42,7 +42,7 @@ const gameOptions = {
                          50, 23, 72, 4, 6,
                          20, 35, 75, 3, 6,
                          100, 27, 96, 13, 50],
-  countdown_in_seconds: [30, 60, 120, 180, 180, 
+  countdown_in_seconds: [60, 60, 120, 180, 180, 
                          180, 180, 180],
   stars_in_seconds:     [[0, 1, 2, 3, 4],
                          [0, 1, 2, 3, 4],
@@ -57,8 +57,8 @@ const gameOptions = {
   mission_square_size: 50,
   mission_interval_size: 40,
 
-  completed_mission: [1, 0, 0, 1, 1,
-                      1, 0, 0],
+  completed_mission: [1, 2, 3, 1, 2,
+                      3, 4, 0],
 }
 
 export default gameOptions;

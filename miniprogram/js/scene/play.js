@@ -25,62 +25,133 @@ export default class Play extends Phaser.State {
     this.target_number = gameOptions.target_number[this.game.level];
     if (this.game.level % 5 == 0) {
       this.countdown_in_seconds = gameOptions.countdown_in_seconds[this.game.level / 5];
-      this.stars_in_seconds = gameOptions.stars_in_seconds[parseInt(this.game.level / 5)];
     }
-
-    this.level_text = this.add.text(0, 100, 'level:' + this.game.level);
+    
+    this.stars_in_seconds = gameOptions.stars_in_seconds[this.game.level];
 
     this.max_size = gameOptions.max_size;
     this.square_size = gameOptions.square_size;
     this.square_interval = gameOptions.square_interval;
 
-    var minutes = parseInt(this.countdown_in_seconds / 60);
-    var seconds = this.countdown_in_seconds - (minutes * 60);
-    var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
-    this.time_text = this.add.text(50, 50, time_string);
-    this.time_text.fill = "#ffffff";
-    this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.Tick, this);
-
     this.delta = (this.max_size - this.map_size) / 2;
 
     this.chosen_square = -1;
+
+    var title = this.add.group();
+    title.scale.set(this.game.screen_ratio);
+    title.x = this.world.width * 0.5;
+    title.y = this.world.height * 0.2;
+
+    const level_board = this.add.sprite(0, 0, 'level_board');
+    level_board.scale.set(0.5);
+    level_board.anchor.set(0.5);
+    title.add(level_board);
+    const current_chapter = this.add.sprite(0, 0, 'current_chapter_' + (parseInt(this.game.level / 5) + 1).toString());
+    current_chapter.scale.set(0.5);
+    current_chapter.anchor.set(0.5);
+    current_chapter.x = -level_board.width * 0.27;
+    current_chapter.y = -level_board.height * 0.33;
+    title.add(current_chapter);
+
+    const back = this.add.button(0, 0, 'back', this.ReturnMenu);
+    back.scale.set(0.5);
+    back.anchor.set(0.5);
+    back.x = level_board.width * 0.24;
+    back.y = level_board.height * 0.30;
+    title.add(back);
+
+    this.pause = this.add.sprite(0, 0, 'pause');
+    this.pause.scale.set(0.5);
+    this.pause.anchor.set(0.5);
+    this.pause.x = -level_board.width * 0.24;
+    this.pause.y = level_board.height * 0.30;
+    this.pause.inputEnabled = true;
+    this.pause.events.onInputDown.add(this.Pause, this);
+    title.add(this.pause);
+
+    this.continue_button = this.add.sprite(0, 0, 'continue');
+    this.continue_button.scale.set(0.5);
+    this.continue_button.anchor.set(0.5);
+    this.continue_button.x = -level_board.width * 0.24;
+    this.continue_button.y = level_board.height * 0.30;
+    this.continue_button.inputEnabled = false;
+    this.continue_button.alpha = 0;
+    this.continue_button.events.onInputDown.add(this.Continue, this);
+    title.add(this.continue_button);
+
+    var minutes = parseInt(this.countdown_in_seconds / 60);
+    var seconds = this.countdown_in_seconds - (minutes * 60);
+    var time_string = this.AddZeros(minutes) + ":" + this.AddZeros(seconds);
+    this.time_text = this.add.text(0, 0, time_string);
+    this.time_text.fontWeight = 'normal';
+    this.time_text.fill = "#ffffff";
+    this.time_text.anchor.set(0.5);
+    this.time_text.x = level_board.width * 0.05;
+    this.time_text.y = level_board.height * 0.01;
+    title.add(this.time_text);
+    this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.Tick, this);
+
+    var symbol = this.GetSymbol();
+    var rule_string = '规则: a' + symbol + 'b=' + this.target_number.toString();
+    this.rule_text = this.add.text(0, 0, rule_string);
+    this.rule_text.font = '微软雅黑';
+    this.rule_text.fontWeight = 'normal';
+    this.rule_text.fill = "#ffffff";
+    this.rule_text.fontSize = 25;
+    this.rule_text.anchor.set(0.5);
+    this.rule_text.x = level_board.width * 0.17;
+    this.rule_text.y = -level_board.height * 0.31;
+    title.add(this.rule_text);
+
+    var buttom = this.add.group();
+    buttom.scale.set(this.game.screen_ratio);
+    buttom.x = this.world.width * 0.5;
+    buttom.y = this.world.height * 0.95;
+
+    const buttom_background = this.add.sprite(0, 0, 'buttom_background');
+    buttom_background.scale.set(0.5);
+    buttom_background.width *= 2;
+    buttom_background.anchor.set(0.5);
+    buttom.add(buttom_background);
+
+    const help_in_game = this.add.sprite(0, 0, 'help_in_game');
+    help_in_game.scale.set(0.5);
+    help_in_game.anchor.set(0.5);
+    help_in_game.y = -buttom_background.height * 0.25;
+
+    buttom.add(help_in_game);
+
+    const add_time = this.add.sprite(0, 0, 'add_time');
+    add_time.scale.set(0.5);
+    add_time.anchor.set(0.5);
+    add_time.x = buttom_background.width * 0.205;
+    add_time.y = -buttom_background.height * 0.3;
+    add_time.inputEnabled = true;
+    add_time.events.onInputDown.add(this.AddTime, this);
+    buttom.add(add_time);
+
+    const prompt = this.add.sprite(0, 0, 'prompt');
+    prompt.scale.set(0.5);
+    prompt.anchor.set(0.5);
+    prompt.x = -buttom_background.width * 0.205;
+    prompt.y = -buttom_background.height * 0.3;
+    prompt.inputEnabled = true;
+    prompt.events.onInputDown.add(this.Prompt, this);
+    buttom.add(prompt);
     
-    this.tArray = new Array();
     this.map = new Array();
+    this.square_number = new Array();
+
+    var border = (this.max_size - this.map_size) / 2;
     for (var i = 0; i < this.max_size; i++) {
-      this.tArray[i] = new Array();
       this.map[i] = new Array();
+      this.square_number[i] = new Array();
       for (var j = 0; j < this.max_size; j++) {
-        this.map[i][j] = 1;
-        let bg = this.add.sprite(
-          (i - 1) * this.square_size,
-          (j - 1) * this.square_size + 100,
-          'particle1'
-        );
-        bg.width = this.square_interval; 
-        bg.height = this.square_interval;
-        bg.index_i = i;
-        bg.index_j = j;
-        bg.coordinate_x = (i - 1) * this.square_size;
-        bg.coordinate_y = (j - 1) * this.square_size + 100;
-        bg.inputEnabled = true;
-        bg.events.onInputDown.add(this.Clicked, this);
-
-        var _style = {
-          fill: "#000",
-          fontSize: "12pt"
-        };
-        bg.number_text = this.add.text(bg.coordinate_x + this.square_size / 4, 
-          bg.coordinate_y + this.square_size / 4, bg.value, _style);
-
-        var border = (this.max_size - this.map_size) / 2;
         if (i < border || j < border || i >= this.max_size - border || j >= this.max_size - border) {
-          bg.alpha = 0;
-          bg.inputEnabled = false;
-          bg.number_text.alpha = 0;
           this.map[i][j] = 0;
+        } else {
+          this.map[i][j] = 1;
         }
-        this.tArray[i][j] = bg;
       }
     }
 
@@ -88,52 +159,99 @@ export default class Play extends Phaser.State {
     while (this.EliminationExist().a == -1 && this.EliminationExist().b == -1) {
       this.RegenerateMap();
     }
-    var prompt_button = this.add.sprite(0, 0, 'prompt');
-    prompt_button.width = 50;
-    prompt_button.height = 50;
-    prompt_button.inputEnabled = true;
-    prompt_button.events.onInputDown.add(this.prompt, this);
 
-    var add_time_button = this.add.sprite(0, 50, 'overtime');
-    add_time_button.width = 50;
-    add_time_button.height = 50;
-    add_time_button.inputEnabled = true;
-    add_time_button.events.onInputDown.add(this.AddTime, this);
+    var numbers = this.add.group();
+    numbers.scale.set(this.game.screen_ratio);
+    numbers.x = this.world.width * 0.5;
+    numbers.y = this.world.height * 0.5;
 
-    var return_menu_button = this.add.sprite(0, 150, 'exit');
-    return_menu_button.width = 50;
-    return_menu_button.height = 50;
-    return_menu_button.inputEnabled = true;
-    return_menu_button.events.onInputDown.add(this.ReturnMenu, this);
+    this.number_button_array = new Array();
 
-    this.continue_button = this.add.sprite(0, 200, 'continue');
-    this.continue_button.width = 50;
-    this.continue_button.height = 50;
-    this.continue_button.alpha = 0;
-    this.continue_button.inputEnabled = false;
-    this.continue_button.events.onInputDown.add(this.Continue, this);
+    var number_background = this.add.sprite(0, 0, 'number_0');
+    number_background.alpha = 0;
+    numbers.add(number_background);
 
-    var pause_button = this.add.sprite(0, 250, 'pause');
-    pause_button.width = 50;
-    pause_button.height = 50;
-    pause_button.inputEnabled = true;
-    pause_button.events.onInputDown.add(this.Pause, this);
+    for (var i = 0; i < this.max_size; i++) {
+      this.number_button_array[i] = new Array();
+      for (var j = 0; j < this.max_size; j++) {
+        var number_image = this.add.sprite(
+          number_background.width * 0.27 * (-5 + i),
+          number_background.height * 0.27 * (-3.5 + j),
+          'number_' + (this.square_number[i][j] + 0).toString(),
+        );
+        number_image.width = this.square_size; 
+        number_image.height = this.square_size;
+        number_image.index_i = i;
+        number_image.index_j = j;
+        number_image.value = this.square_number[i][j];
+        number_image.inputEnabled = true;
+        number_image.events.onInputDown.add(this.Clicked, this);   
+        
+        var prominent = this.add.sprite(
+          number_background.width * 0.27 * (-5 + i),
+          number_background.height * 0.27 * (-3.5 + j),
+          'prominent'
+        );
+        prominent.width = this.square_size; 
+        prominent.height = this.square_size;
+        prominent.alpha = 0;
+        numbers.add(prominent);
+
+        var chosen_border = this.add.sprite(
+          number_background.width * 0.27 * (-5 + i),
+          number_background.height * 0.27 * (-3.5 + j),
+          'chosen_border'
+        );
+        chosen_border.width = this.square_size; 
+        chosen_border.height = this.square_size;
+        chosen_border.alpha = 0;
+        numbers.add(chosen_border);
+
+        number_image.prominent = prominent;
+        number_image.chosen_border = chosen_border;
+
+        if (i < border || j < border || i >= this.max_size - border || j >= this.max_size - border) {
+          number_image.alpha = 0;
+          number_image.inputEnabled = false;
+        }
+        this.number_button_array[i][j] = number_image;
+        numbers.add(this.number_button_array[i][j]);
+        numbers.moveDown(this.number_button_array[i][j]);
+        numbers.moveDown(this.number_button_array[i][j]);
+      }
+    }
+  }
+
+  GetSymbol() {
+    switch (this.rule) {
+      case 1:
+          return '+';
+      case 2:
+          return '-';
+      case 3:
+          return '*';
+      case 4:
+          return '/';
+    }
   }
 
   Continue() {
     this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.Tick, this);
     this.continue_button.alpha = 0;
     this.continue_button.inputEnabled = false;
+    this.pause.alpha = 1;
+    this.pause.inputEnabled = true;
   }
 
-  Pause() {
+  Pause(sprite, pointer) {
     this.time.events.remove(this.timer);
+    this.pause.alpha = 0;
+    this.pause.inputEnabled = false;
     this.continue_button.alpha = 1;
     this.continue_button.inputEnabled = true;
   }
 
-  ReturnMenu(sprite, pointer) {
-    this.time.events.remove(this.timer);
+  ReturnMenu() {
     this.game.state.start('select');
   }
 
@@ -142,9 +260,8 @@ export default class Play extends Phaser.State {
   }
 
   GameOver() {
-    this.time.events.remove(this.timer);
     this.time_text.text="Game Over";
-    // this.game.state.start('select');
+    this.game.state.start('gameover');
   }
 
   Tick() {
@@ -165,7 +282,7 @@ export default class Play extends Phaser.State {
     return num;
   }
 
-  MissionComplete() {
+  MissionCompleteJudge() {
     var total = this.map_size * this.map_size;
     for (var i = 0; i < total; i++) {
       var x = parseInt(i / this.map_size) + this.delta;
@@ -198,15 +315,10 @@ export default class Play extends Phaser.State {
       }
     }
     var sort_array = this.GenerateOrder(count);
-    var tmpx = [];
-    var tmpy = [];
     for (var i = 0; i < count; i++) {
       var x = parseInt(i / this.map_size) + this.delta;
       var y = i % this.map_size + this.delta;
-      this.tArray[x][y].value = value[sort_array[i]];
-      this.tArray[x][y].number_text.setText(sort_array[i]);
-      tmpx.push(x);
-      tmpy.push(y);
+      this.square_number[x][y] = value[sort_array[i]];
     }
   }
 
@@ -292,8 +404,7 @@ export default class Play extends Phaser.State {
     for (var i = 0; i < this.map_size; i++) {
       for (var j = 0; j < this.map_size; j++) {
         var value = unordered_square[sort_array[i * this.map_size + j]]
-        this.tArray[i + this.delta][j + this.delta].value = value;
-        this.tArray[i + this.delta][j + this.delta].number_text.setText(value);
+        this.square_number[i + this.delta][j + this.delta] = value;
       }
     }
   }
@@ -303,39 +414,43 @@ export default class Play extends Phaser.State {
     if (this.game.level % 5 == 0) {
       for (var i = 4; i >= 0; i--) {
         if (this.countdown_in_seconds >= this.stars_in_seconds[i]) {
-          console.log('You earned ' + (i + 1) + ' stars!');
+          this.game.stars = i + 1;
           break;
         }
       }
-      console.log('mission complete');
-      this.time.events.remove(this.timer);
-      this.game.state.start('select');
+      this.game.state.start('nextmission');
     } else {
-      this.time.events.remove(this.timer);
       this.game.state.start('play');
     }
   }
 
   Clicked(sprite, pointer) {
+    for (var i = 0; i < this.max_size; i++) {
+      for (var j = 0; j < this.max_size; j++) {
+        this.number_button_array[i][j].prominent.alpha = 0;
+      }
+    }
     if (this.chosen_square == -1) {
-      sprite.alpha = 0;
       var index_i = sprite.index_i;
       var index_j = sprite.index_j;
+      this.number_button_array[index_i][index_j].chosen_border.alpha = 1;
       var id = index_i * this.max_size + index_j;
       this.chosen_square = id;
     } else {
       var index_i = parseInt(this.chosen_square / this.max_size);
       var index_j = this.chosen_square % this.max_size;
-      this.tArray[index_i][index_j].alpha = 1;
+      this.number_button_array[index_i][index_j].chosen_border.alpha = 0;
+      this.number_button_array[index_i][index_j].alpha = 1;
       if (this.EliminationJudgement(index_i, index_j, sprite.index_i, sprite.index_j)) {
-        if (this.GameRule(sprite.value, this.tArray[index_i][index_j].value)) {
+        if (this.GameRule(sprite.value, this.square_number[index_i][index_j])) {
+          this.ShowPath();
           sprite.alpha = 0;
-          this.tArray[index_i][index_j].alpha = 0;
+          this.number_button_array[index_i][index_j].alpha = 0;
+          this.number_button_array[index_i][index_j].inputEnabled = false;
+          this.number_button_array[sprite.index_i][sprite.index_j].inputEnabled = false;
           this.map[sprite.index_i][sprite.index_j] = 0;
           this.map[index_i][index_j] = 0;
-          sprite.number_text.alpha = 0;
-          this.tArray[index_i][index_j].number_text.alpha = 0;
-          if (this.MissionComplete()) {
+          if (this.MissionCompleteJudge()) {
             this.NextMission();
             return;
           }
@@ -346,6 +461,9 @@ export default class Play extends Phaser.State {
       }
       this.chosen_square = -1;
     }
+  }
+
+  ShowPath() {
   }
 
   EliminationJudgement(sx, sy, ex, ey) {
@@ -402,7 +520,7 @@ export default class Play extends Phaser.State {
     return false;
   }
 
-  prompt(sprite, pointer) {
+  Prompt(sprite, pointer) {
     var tmp = this.EliminationExist();
     var i = tmp.a;
     var j = tmp.b;
@@ -410,8 +528,8 @@ export default class Play extends Phaser.State {
     var y1 = i % this.max_size;
     var x2 = parseInt(j / this.max_size);
     var y2 = j % this.max_size;
-    this.tArray[x1][y1].number_text.addColor('#fff', 0);
-    this.tArray[x2][y2].number_text.addColor('#fff', 0);
+    this.number_button_array[x1][y1].prominent.alpha = 1;
+    this.number_button_array[x2][y2].prominent.alpha = 1;
   }
 
   EliminationExist() {
@@ -433,7 +551,7 @@ export default class Play extends Phaser.State {
           continue;
         }
         if (this.EliminationJudgement(x1, y1, x2, y2)) {
-          if (this.GameRule(this.tArray[x1][y1].value, this.tArray[x2][y2].value)) {
+          if (this.GameRule(this.square_number[x1][y1], this.square_number[x2][y2])) {
             result.a = x1 * this.max_size + y1;
             result.b = x2 * this.max_size + y2;
             return result;

@@ -12,7 +12,7 @@ export default class Select extends Phaser.State {
     this.music = new Music();
     this.music.playBgm();
 
-    const star_position = [[0.13, -0.03], [0.28, -0.03], [0, 0.03], [0.15, 0.03], [0.3, 0.03]];
+    const star_position = [[0.13, -0.03], [0.26, -0.033], [0, 0.03], [0.15, 0.03], [0.29, 0.03]];
 
     const background = this.add.sprite(0, 0, 'background');
     background.width = this.world.width;
@@ -34,18 +34,22 @@ export default class Select extends Phaser.State {
     return_button.y = board.height * 0.36;
     menu.add(return_button);
 
-    var prev_page_button = this.add.button(0, 0, 'prev_page', this.PrevPage);
+    var prev_page_button = this.add.sprite(0, 0, 'prev_page');
     prev_page_button.scale.set(0.5);
     prev_page_button.anchor.set(0.5);
     prev_page_button.x = -board.width * 0.22;
     prev_page_button.y = board.height * 0.25;
+    prev_page_button.inputEnabled = true;
+    prev_page_button.events.onInputDown.add(this.PrevPage, this);
     menu.add(prev_page_button);
 
-    var next_page_button = this.add.button(0, 0, 'next_page', this.NextPage);
+    var next_page_button = this.add.sprite(0, 0, 'next_page');
     next_page_button.scale.set(0.5);
     next_page_button.anchor.set(0.5);
     next_page_button.x = board.width * 0.22;
     next_page_button.y = board.height * 0.25;
+    next_page_button.inputEnabled = true;
+    next_page_button.events.onInputDown.add(this.NextPage, this);
     menu.add(next_page_button);
 
     this.page_number = 0;
@@ -60,20 +64,16 @@ export default class Select extends Phaser.State {
     this.completed_mission = gameOptions.completed_mission;
 
     this.missions = new Array();
-    var start_mission_flag = true;
+    this.start_mission_flag = -1;
     for (var i = 0; i < this.mission_count; i++) {
       this.missions[i] = this.add.group();
       this.missions[i].y = -board.height * 0.27 + (i % 3) * board.height * 0.17;
 
-      var lock_flag = false;
-      if (this.completed_mission[i] == 0) {
-        if (!start_mission_flag) {
-          lock_flag = true;
-        }
-        start_mission_flag = false;
+      if (this.completed_mission[i] == 0 && this.start_mission_flag == -1) {
+        this.start_mission_flag = i + 1;
       }
 
-      if (lock_flag == true) {
+      if (this.start_mission_flag != -1 && this.start_mission_flag <= i) {
         var lock_mission = this.add.sprite(0, 0, 'lock_mission');
         lock_mission.scale.set(0.5);
         lock_mission.anchor.set(0.5);
@@ -95,7 +95,7 @@ export default class Select extends Phaser.State {
       this.missions[i].add(mission_text);
       
       for (var j = 0; j < this.mission_in_chapter; j++) {
-        if (lock_flag == true) {
+        if (this.start_mission_flag != -1 && i >= this.start_mission_flag) {
           continue;
         }
         if (j >= this.completed_mission[i]) {
@@ -117,6 +117,7 @@ export default class Select extends Phaser.State {
       if (this.page_number * this.mission_in_one_page > i || 
          (this.page_number + 1) * this.mission_in_one_page <= i) {
         this.missions[i].setAll('alpha', 0);
+        this.missions[i].setAll('inputEnabled', false);
       }
       menu.add(this.missions[i]);
     }
@@ -127,15 +128,44 @@ export default class Select extends Phaser.State {
   }
 
   startMission(sprite, pointer) {
-    this.game.level = sprite.index;
+    this.game.level = sprite.index * 5;
+    console.log(this.game.level);
     this.game.state.start('play');
   }
 
   NextPage() {
-    console.log();
+    if ((this.page_number + 1) * 3 > this.mission_count) {
+      return;
+    }
+    for (var i = 0; i < this.mission_count; i++) {
+      this.missions[i].setAll('alpha', 0);
+      this.missions[i].setAll('inputEnabled', false);
+    }
+    this.page_number += 1;
+    for (var i = this.page_number * this.mission_in_one_page; 
+             i < (this.page_number + 1) * this.mission_in_one_page && i < this.mission_count; i++) {
+      this.missions[i].setAll('alpha', 1);
+      if (i <= this.start_mission_flag) {
+        this.missions[i].setAll('inputEnabled', true);
+      }
+    }
   }
 
   PrevPage() {
-    console.log();
+    if (this.page_number == 0) {
+      return;
+    }
+    for (var i = 0; i < this.mission_count; i++) {
+      this.missions[i].setAll('alpha', 0);
+      this.missions[i].setAll('inputEnabled', false);
+    }
+    this.page_number -= 1;
+    for (var i = this.page_number * this.mission_in_one_page; 
+             i < (this.page_number + 1) * this.mission_in_one_page && i < this.mission_count; i++) {
+      this.missions[i].setAll('alpha', 1);
+      if (i <= this.start_mission_flag) {
+        this.missions[i].setAll('inputEnabled', true);
+      }
+    }
   }
 }
