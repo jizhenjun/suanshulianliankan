@@ -1,24 +1,19 @@
-import Phaser from 'libs/phaser-wx.js'
-import gameOptions from 'gameOptions.js';
-import Start from 'scene/start.js'
-import Play from 'scene/play.js'
-import Select from 'scene/select.js'
-import Help from 'scene/help.js'
-import Gameover from 'scene/gameover.js'
-import NextMission from 'scene/nextmission.js'
+// import Phaser from 'libs/phaser-wx.js'
+import gameOptions from './gameOptions.js';
+import Start from './scene/start.js'
+import Play from './scene/play.js'
+import Select from './scene/select.js'
+import Help from './scene/help.js'
+import Gameover from './scene/gameover.js'
+import NextMission from './scene/nextmission.js'
 
 let game;
-wx.getSystemInfo({
-  success: function (res) {
-    gameOptions.width = res.windowWidth;
-    gameOptions.heigth = res.windowHeight;
-    game = new Phaser.Game({
-      renderer: Phaser.CANVAS,
-      canvas: canvas,
-      width: res.windowWidth,
-      height: res.windowHeight
-    });
-  }
+gameOptions.width = window.width;
+gameOptions.heigth = window.height;
+game = new Phaser.Game({
+  renderer: Phaser.CANVAS,
+  width: window.width,
+  height: window.height,
 });
 
 game.state.add('start', new Start(game));

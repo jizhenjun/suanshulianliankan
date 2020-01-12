@@ -1,4 +1,4 @@
-import Phaser from '../libs/phaser-wx.js';
+// import Phaser from '../libs/phaser-wx.js';
 import gameOptions from '../gameOptions.js';
 import Music from '../music.js';
 

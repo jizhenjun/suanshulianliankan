@@ -1,4 +1,4 @@
-import Phaser from '../libs/phaser-wx.js';
+// import Phaser from '../libs/phaser-wx.js';
 import gameOptions from '../gameOptions.js';
 
 export default class Help extends Phaser.State {
